@@ -5,7 +5,7 @@ A Node.js wrapper for Telr Payment Gateway integration that provides simple meth
 ## Installation
 
 ```sh
-npm install axios dotenv
+npm install axios dotenv jest
 ```
 
 ## Configuration
@@ -24,7 +24,7 @@ TELR_MODE=1  # 0 for live mode, 1 for test mode
 ### Making a Payment
 
 ```js
-import { makePayment } from "./TelrService.js";
+const { makePayment } = require("./TelrService.js");
 
 const amount = 100;
 const currency = "AED";
@@ -32,7 +32,7 @@ const description = "Product Payment";
 
 try {
   const response = await makePayment(amount, currency, description);
-  console.log("Payment URL:", response.order.url);
+  console.log("Payment Response:", response);
 } catch (error) {
   console.error("Payment failed:", error);
 }
@@ -41,14 +41,22 @@ try {
 ### Checking Payment Status
 
 ```js
-import { checkPayment } from "./TelrService.js";
+const { checkPayment } = require("./TelrService.js");
 
 try {
-  const status = await checkPayment("your_reference_id");
-  console.log("Payment Status:", status);
+  const response = await checkPayment("your_reference_id");
+  console.log("Payment Status:", response);
 } catch (error) {
   console.error("Status check failed:", error);
 }
+```
+
+## Testing
+
+Run the test suite using:
+
+```sh
+npm test
 ```
 
 ## Features
@@ -58,6 +66,7 @@ try {
 - Automatic cart ID generation
 - Environment-based configuration
 - Error handling
+- Comprehensive test coverage
 
 ## API Reference
 
@@ -67,14 +76,19 @@ try {
 - `currency`: Currency code (default: 'AED')
 - `description`: Payment description (default: 'OMD Payment')
 
+Returns a promise that resolves to the Telr API response.
+
 ### checkPayment(refId)
 
 - `refId`: Reference ID of the transaction to check
+
+Returns a promise that resolves to the payment status response.
 
 ## Security
 
 This implementation includes:
 
-- Secure random cart ID generation
+- Secure random cart ID generation using crypto
 - Environment variable based configuration
 - Error handling and logging
+- Request/Response validation

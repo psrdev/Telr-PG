@@ -1,6 +1,6 @@
-import axios from 'axios';
-import dotenv from 'dotenv';
-import { generateCartId } from './utils.js';
+const axios = require('axios');
+const dotenv = require('dotenv');
+const { generateCartId } = require('./utils');
 
 dotenv.config();
 
@@ -9,7 +9,6 @@ const { TELR_AUTH_TOKEN, TELR_STORE_ID, TELR_API_URL, TELR_MODE } = process.env;
 if (!TELR_AUTH_TOKEN || !TELR_STORE_ID || !TELR_API_URL || !TELR_MODE) {
     throw new Error("Missing required environment variables: TELR_AUTH_TOKEN, TELR_STORE_ID, TELR_API_URL, TELR_MODE");
 }
-
 
 const HEADERS = {
     Accept: 'application/json',
@@ -62,8 +61,6 @@ async function checkPayment(refId) {
         console.error('Check Payment Error:', error.response?.data || error.message);
         throw error; // Re-throw for higher-level handling
     }
-
 }
 
-
-export { makePayment, checkPayment };
+module.exports = { makePayment, checkPayment };
