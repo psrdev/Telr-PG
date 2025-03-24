@@ -5,7 +5,7 @@ const { generateCartId } = require('./utils');
 dotenv.config();
 
 // Ensure required environment variables are set
-const { TELR_AUTH_TOKEN, TELR_STORE_ID, TELR_API_URL, TELR_MODE } = process.env;
+const { TELR_AUTH_TOKEN, TELR_STORE_ID, TELR_API_URL, TELR_MODE, CLIENT_DOMAIN } = process.env;
 if (!TELR_AUTH_TOKEN || !TELR_STORE_ID || !TELR_API_URL || !TELR_MODE) {
     throw new Error("Missing required environment variables: TELR_AUTH_TOKEN, TELR_STORE_ID, TELR_API_URL, TELR_MODE");
 }
@@ -14,6 +14,8 @@ const HEADERS = {
     Accept: 'application/json',
     'Content-Type': 'application/json'
 };
+const cartId = generateCartId();
+
 
 // make payment
 async function makePayment(amount, currency = 'AED', description = 'OMD Payment') {
@@ -24,16 +26,17 @@ async function makePayment(amount, currency = 'AED', description = 'OMD Payment'
             authkey: TELR_AUTH_TOKEN,
             framed: 0,
             order: {
-                cartid: generateCartId(),
+                cartid: cartId,
                 test: TELR_MODE,
                 amount,
                 currency,
                 description
             },
             return: {
-                authorised: 'https://www.mysite.com/authorised',
-                declined: 'https://www.mysite.com/declined',
-                cancelled: 'https://www.mysite.com/cancelled'
+                authorised: `${CLIENT_DOMAIN}/payment-staus?status=authorised&ref=${cartId}`,
+                declined: `${CLIENT_DOMAIN}/payment-staus?status=declined&ref=${cartId}`,
+                cancelled: `${CLIENT_DOMAIN}/payment-staus?status=cancelled&ref=${cartId}`,
+
             }
         };
 

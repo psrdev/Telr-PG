@@ -1,7 +1,8 @@
 const { makePayment, checkPayment } = require("./TelrService.js");
 
 async function main() {
-    const payment = await checkPayment('C2BB32F3734D0EBD881C0BEAC52FBE363D16CC6905A7C79DF6DA2A1F15A7FA4F');
+    // const payment = await makePayment('6000');
+    const payment = await checkPayment('15B181F2DD3004820297DD46DB29DC7B462B7D0B6C8367D9ED4906244D879F2D');
     console.log('Payment:', payment);
 }
 
