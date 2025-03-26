@@ -18,7 +18,7 @@ const cartId = generateCartId();
 
 
 // make payment
-async function makePayment(amount, currency = 'AED', description = 'OMD Payment') {
+async function makePayment(amount, customer) {
     try {
         const payload = {
             method: 'create',
@@ -29,9 +29,11 @@ async function makePayment(amount, currency = 'AED', description = 'OMD Payment'
                 cartid: cartId,
                 test: TELR_MODE,
                 amount,
-                currency,
-                description
+                currency: 'AED',
+                description: 'OMD Payment'
             },
+            customer,
+
             return: {
                 authorised: `${CLIENT_DOMAIN}/payment-staus?status=authorised&ref=${cartId}`,
                 declined: `${CLIENT_DOMAIN}/payment-staus?status=declined&ref=${cartId}`,

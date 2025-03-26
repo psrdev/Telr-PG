@@ -8,23 +8,47 @@ app.use(bodyParser.json());
 // Webhook endpoint
 app.post('/webhook/telr', (req, res) => {
     console.log('Telr Webhook Received:', req.body);
-    // Save data for later use
     const webhookData = req.body;
+    const filePath = './webhook/webhookData.json';
 
-    // Example: Save the data to a file
-    const filePath = './webhookData.json';
+    // Read existing data first
+    fs.readFile(filePath, (readErr, data) => {
+        let existingData = [];
 
-    fs.writeFile(filePath, JSON.stringify(webhookData, null, 2), (err) => {
-        if (err) {
-            console.error('Error saving data to file:', err);
-        } else {
-            console.log('Data saved to file for later use:', filePath);
+        if (!readErr && data.length > 0) {
+            try {
+                existingData = JSON.parse(data);
+                if (!Array.isArray(existingData)) {
+                    existingData = [existingData];
+                }
+            } catch (parseErr) {
+                console.error('Error parsing existing data:', parseErr);
+                existingData = [];
+            }
         }
-    });
 
+        // Add new data with timestamp
+        webhookData.timestamp = new Date().toISOString();
+        existingData.push(webhookData);
+
+        // Write back the combined data
+        fs.writeFile(filePath, JSON.stringify(existingData, null, 2), (writeErr) => {
+            if (writeErr) {
+                console.error('Error saving data to file:', writeErr);
+            } else {
+                console.log('Data appended to file:', filePath);
+            }
+        });
+    });
 
     res.status(200).json({ status: 'success' });
 });
+
+app.get('/', (req, res) => {
+    res.send('Server is running');
+
+});
+
 
 // Start server
 const PORT = 3000;
