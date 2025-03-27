@@ -5,10 +5,12 @@
     "axios": "^1.8.4",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev": "nodemon ./webhook/webhook.js"
   },
   "devDependencies": {
     "jest": "^29.7.0",

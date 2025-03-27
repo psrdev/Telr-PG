@@ -1,5 +1,7 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
+const crypto = require('crypto');
+const url = require('url');
 const { generateCartId } = require('./utils');
 
 dotenv.config();
@@ -68,4 +70,40 @@ async function checkPayment(refId) {
     }
 }
 
-module.exports = { makePayment, checkPayment };
+function signData(fullUrl) {
+    const parsedUrl = new URL(fullUrl); // Parse the URL
+    const queryParams = parsedUrl.searchParams;
+    const secretKey = process.env.TELR_WEBHOOK_KEY;
+    const fields = [
+        secretKey,
+        queryParams.get('tran_store'),
+        queryParams.get('tran_type'),
+        queryParams.get('tran_class'),
+        queryParams.get('tran_test'),
+        queryParams.get('tran_ref'),
+        queryParams.get('tran_prevref'),
+        queryParams.get('tran_firstref'),
+        queryParams.get('tran_currency'),
+        queryParams.get('tran_amount'),
+        queryParams.get('tran_cartid'),
+        queryParams.get('tran_desc'),
+        queryParams.get('tran_status'),
+        queryParams.get('tran_authcode'),
+        queryParams.get('tran_authmessage')
+    ];
+    console.log(fields);
+    const dataString = fields.join(':');
+
+
+
+
+    const computedHash = crypto.createHash("sha1").update(dataString).digest("hex");
+    const telrHash = queryParams.get('tran_check');
+
+
+    return computedHash === telrHash;
+
+
+}
+
+module.exports = { makePayment, checkPayment, signData };

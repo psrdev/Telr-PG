@@ -5,4 +5,5 @@ function generateCartId() {
     return BigInt('0x' + crypto.randomBytes(10).toString('hex')).toString().padStart(20, '0');
 }
 
+
 module.exports = { generateCartId };
