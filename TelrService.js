@@ -70,40 +70,29 @@ async function checkPayment(refId) {
     }
 }
 
-function signData(fullUrl) {
-    const parsedUrl = new URL(fullUrl); // Parse the URL
-    const queryParams = parsedUrl.searchParams;
+function signData(bodyData) {
     const secretKey = process.env.TELR_WEBHOOK_KEY;
     const fields = [
         secretKey,
-        queryParams.get('tran_store'),
-        queryParams.get('tran_type'),
-        queryParams.get('tran_class'),
-        queryParams.get('tran_test'),
-        queryParams.get('tran_ref'),
-        queryParams.get('tran_prevref'),
-        queryParams.get('tran_firstref'),
-        queryParams.get('tran_currency'),
-        queryParams.get('tran_amount'),
-        queryParams.get('tran_cartid'),
-        queryParams.get('tran_desc'),
-        queryParams.get('tran_status'),
-        queryParams.get('tran_authcode'),
-        queryParams.get('tran_authmessage')
+        bodyData.tran_store,
+        bodyData.tran_type,
+        bodyData.tran_class,
+        bodyData.tran_test,
+        bodyData.tran_ref,
+        bodyData.tran_prevref,
+        bodyData.tran_firstref,
+        bodyData.tran_currency,
+        bodyData.tran_amount,
+        bodyData.tran_cartid,
+        bodyData.tran_desc,
+        bodyData.tran_status,
+        bodyData.tran_authcode,
+        bodyData.tran_authmessage
     ];
-    console.log(fields);
     const dataString = fields.join(':');
-
-
-
-
     const computedHash = crypto.createHash("sha1").update(dataString).digest("hex");
-    const telrHash = queryParams.get('tran_check');
-
-
+    const telrHash = bodyData.tran_check;
     return computedHash === telrHash;
-
-
 }
 
 module.exports = { makePayment, checkPayment, signData };
